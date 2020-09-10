@@ -1,0 +1,4 @@
+Discord Permissions calculator -> https://discordapi.com/permissions.html
+Discord.js Docs -> https://discord.js.org/?source=post_page---------------------------#/docs/main/stable/general/welcome
+Youtube Video I was following -> https://youtu.be/BmKXBVdEV0g
+    Stil need to finish video from Index 5 -> https://www.youtube.com/watch?v=BmKXBVdEV0g&list=WL&index=5
