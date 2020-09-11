@@ -1,27 +1,37 @@
 require('dotenv').config();
 
-const {Client, MessageEmbed} = require('discord.js');
+const Discord = require('discord.js');
 
-const client = new Client({
+const client = new Discord.Client({
     partials: ['MESSAGE', 'REACTION']
 });
 
 const PREFIX = "$";
 
+// FS - Allows us to look at the File System
+const fs = require('fs');
+
+// Holds a Collection of Commands
+client.commands = new Discord.Collection();
+
+// Reads the path given, makes sure it only looks for .js files
+const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+// Loop through all the files and add them to the Commands collection
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    client.commands.set(command.name, command);
+}
+
 client.on('ready', () => {
     console.log(`${client.user.tag} has logged in`);
+    client.user.setActivity('You all', {type: 'WATCHING'}).catch(console.error);
 });
 
 client.on('message', async(message) => {
     if(message.author.bot) return;
     console.log(`[${message.author.tag}]: ${message.content}`);
-    // React if a user says "Hello"
-    if (message.content === 'hello') {
-        message.reply('Hello there!');
-        message.channel.send('Hello there');
-    }
     // React if the user types a Specfic "Command" (starts with PREFIX)
-    else if (message.content.startsWith(PREFIX)) {
+    if (message.content.startsWith(PREFIX)) {
         /* 
             ... is called the "Spreader Operator"
             It will catch the rest and put it into an array
@@ -31,54 +41,10 @@ client.on('message', async(message) => {
         .substring(PREFIX.length)
         .split(/\s+/);
         
-        if (COMMAND === 'kick') {
-            if (!message.member.hasPermission('KICK_MEMBERS')) 
-                return message.reply('You do not have permissions to use that command');
-            if (args.length === 0) 
-                return message.reply('Please provide an ID');
-            
-            const member = message.guild.members.cache.get(args[0]);
-            if (member) {
-                member
-                .kick()
-                .then((member) => message.channel.send(`${member} was kicked.`))
-                .catch((err) => message.channel.send('I can not kick that user :('));
-            }
-            else {
-                message.channel.send('That member was not found');
-            }
-        }
-        else if (COMMAND === 'ban') {
-            if (!message.member.hasPermission('BAN_MEMBERS')) 
-                return message.reply('You do not have permissions to use that command');
-            if (args.length === 0) 
-                return message.reply('Please provide an ID');
-            
-            try {
-                const user = await message.guild.members.ban(args[0]);
-                console.log(user);
-                message.channel.send('User was banned successfully');
-            } catch (err) {
-                console.log(err);
-                message.channel.send('An error occured. Either I do not have permissions or the user was not found');
-            }            
-        }
-    }
-    // If the message is "how to embed"
-    else if (message.content === 'how to embed') {
-      // We can create embeds using the MessageEmbed constructor
-      // Read more about all that you can do with the constructor
-      // over at https://discord.js.org/#/docs/main/master/class/MessageEmbed
-      const embed = new MessageEmbed()
-        // Set the title of the field
-        .setTitle('A slick little embed')
-        // Set the color of the embed
-        .setColor(0xff0000)
-        // Set the main content of the embed
-        .setDescription('Hello, this is a slick embed!');
-      // Send the embed to the same channel as the message
-      message.channel.send(embed)
-      .catch((err) => message.channel.send('Embedding did not work :('));
+        const commandToExecute = client.commands.get(COMMAND);
+        if (commandToExecute !== undefined) {
+            commandToExecute.execute(message, args);
+        }        
     }
 })
 
@@ -137,17 +103,26 @@ client.on('messageReactionRemove', (reaction, user) => {
 // Create an event listener for new guild members
 client.on('guildMemberAdd', member => {
     // Send the message to a designated channel on a server:
-    const channel = member.guild.channels.cache.find(ch => ch.name === 'member-log');
+    const channel = member.guild.channels.cache.find(ch => ch.name === 'welcome');
     // Do nothing if the channel wasn't found on this server
     if (!channel) return;
+    
+    // Look to make an image style welcome image
+    const embed = new Discord.MessageEmbed()
+                .setTitle('User information')
+                .addField('Player Name', member.displayName)
+                .setColor(0xF1C40F)
+                .setThumbnail(member.user.avatarURL())
+                .setFooter('Subscribe to my channel');
+    
     // Send the message, mentioning the member
-    channel.send(`Welcome to the server, ${member}`);
+    channel.send(embed);
 });
 
 // Create an event listener for new guild members
 client.on('guildMemberRemove', member => {
     // Send the message to a designated channel on a server:
-    const channel = member.guild.channels.cache.find(ch => ch.name === 'member-log');
+    const channel = member.guild.channels.cache.find(ch => ch.name === 'welcome');
     // Do nothing if the channel wasn't found on this server
     if (!channel) return;
     // Send the message, mentioning the member
