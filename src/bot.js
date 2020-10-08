@@ -43,8 +43,11 @@ client.on('message', async(message) => {
         
         const commandToExecute = client.commands.get(COMMAND);
         if (commandToExecute !== undefined) {
-            commandToExecute.execute(message, args);
-        }        
+            commandToExecute.execute(client, message, args);
+        }
+        else {
+            message.channel.send(`Unable to find command: ${COMMAND}\n Please use $commmands to get a list of commands`);
+        }   
     }
 })
 
@@ -111,7 +114,7 @@ client.on('guildMemberAdd', member => {
     const embed = new Discord.MessageEmbed()
                 .setTitle('User information')
                 .addField('Player Name', member.displayName)
-                .setColor(0xF1C40F)
+                .setColor(`DARK_RED`)
                 .setThumbnail(member.user.avatarURL())
                 .setFooter('Subscribe to my channel');
     

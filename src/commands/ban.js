@@ -1,7 +1,7 @@
 module.exports = {
     name: 'ban',
     description: "Bans a user",
-    async execute(message, args){
+    async execute(client, message, args){
         if (!message.member.hasPermission('BAN_MEMBERS')) {
             return message.reply('You do not have permissions to use that command');
         }
