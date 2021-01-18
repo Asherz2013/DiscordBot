@@ -2,7 +2,9 @@
  Personal Discord Bot
 
 Discord Permissions calculator -> https://discordapi.com/permissions.html
-Discord.js Docs -> https://discord.js.org/?source=post_page---------------------------#/docs/main/stable/general/welcome
+Discord.js Docs:
+    https://discord.js.org/?source=post_page---------------------------#/docs/main/stable/general/welcome
+    https://discordjs.guide/#before-you-begin
 
 
 Youtube Playlists:

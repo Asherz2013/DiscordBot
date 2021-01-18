@@ -4,7 +4,10 @@ const ytSearch = require('yt-search');
 module.exports = {
     name: 'play',
     description: "Join and player a video from youtube",
-    async execute(client, message, args) {
+    args: true,
+    usage: '<URL \\ band \\ song name>',
+    cooldown: 5,
+    async execute(message, args) {
         // In channel
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) return message.channel.send('You need to be in a channel to execute this command!');
@@ -12,8 +15,6 @@ module.exports = {
         const permissions = voiceChannel.permissionsFor(message.client.user);
         if (!permissions.has('CONNECT')) return message.channel.send('You do not have the correct permissions');
         if (!permissions.has('SPEAK')) return message.channel.send('You do not have the correct permissions');
-        // DO we have some arguments?
-        if (!args.length) return message.channel.send('You need to send the second argument');
 
         const validURL = (str) => {
             var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;

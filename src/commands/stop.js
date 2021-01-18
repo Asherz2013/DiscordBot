@@ -1,7 +1,7 @@
 module.exports = {
     name: 'stop',
     description: 'Stops the bot from playing music',
-    async execute(client, message, args) {
+    async execute(message, args) {
         // In channel
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) return message.channel.send('You need to be in a channel to execute this command!');
