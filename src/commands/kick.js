@@ -4,10 +4,8 @@ module.exports = {
     args: true,
     usage: '<ID>',
     guildOnly: true,
+    permissions: 'KICK_MEMBERS',
     execute(message, args){
-        if (!message.member.hasPermission('KICK_MEMBERS')) {
-            return message.reply('You do not have permissions to use that command');
-        }
         const member = message.guild.members.cache.get(args[0]);
         if (member) {
             member
