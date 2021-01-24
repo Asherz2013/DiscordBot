@@ -1,7 +1,7 @@
 const { prefix, defaultCooldown } = require(`../../config.json`);
 
 module.exports = (Discord, client, message) => {
-    const cooldowns = new Discord.Collection();
+    const cooldowns = client.cooldowns;
 
     // No prefix or its coming from a bot.
     if(!message.content.startsWith(prefix) || message.author.bot) return;
@@ -54,6 +54,12 @@ module.exports = (Discord, client, message) => {
         const now = Date.now();
         // Get the collection of TimeStamps for the given command
         const timestamps = cooldowns.get(commandToExecute.name);
+
+        console.log("cooldowns");
+        console.log(cooldowns);
+        console.log("timestamps");
+        console.log(timestamps);
+
         // Does the command specify a Cooldown amount? If not we use 3 seconds
         const cooldownAmount = (commandToExecute.cooldown || defaultCooldown) * 1000;
         // Does the TimeStamp have this authors ID in it?
@@ -69,6 +75,9 @@ module.exports = (Discord, client, message) => {
         timestamps.set(message.author.id, now);
         // Ensure that after the cooldown period we remove the Author ID. Allows us to make sure the user can set the command again
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+
+        console.log("timestamps");
+        console.log(timestamps);
 
         // By this point we know its all good. So run the command
         commandToExecute.execute(message, args);

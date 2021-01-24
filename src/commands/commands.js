@@ -1,10 +1,9 @@
 const { prefix, defaultCooldown } = require('../config.json');
 
 module.exports = {
-    name: 'help',
+    name: 'commands',
     description: "List all of my commands or info about a specific command.",
-    aliases: ['commands'],
-    usage: `[Command name]`,
+    aliases: ['help'],
     cooldown: 5,
     execute(message, args){
         const data = [];
