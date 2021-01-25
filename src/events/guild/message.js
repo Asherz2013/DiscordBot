@@ -16,6 +16,11 @@ module.exports = (Discord, client, message) => {
     .substring(prefix.length)
     .split(/\s+/);
     
+    if (COMMAND_NAME === 'testJoin')
+    {
+        return client.emit('guildMemberAdd', message.member);
+    }
+
     // Try to find the command fom our command list
     const commandToExecute = client.commands.get(COMMAND_NAME) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(COMMAND_NAME));
     
