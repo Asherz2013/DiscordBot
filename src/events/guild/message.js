@@ -1,8 +1,8 @@
 const { prefix, defaultCooldown } = require(`../../config.json`);
 
-module.exports = (Discord, client, message) => {
-    const cooldowns = client.cooldowns;
+const cooldowns = new Map();
 
+module.exports = (Discord, client, message) => {
     // No prefix or its coming from a bot.
     if(!message.content.startsWith(prefix) || message.author.bot) return;
     // Log the message to the console (REMOVE ME)
@@ -15,11 +15,6 @@ module.exports = (Discord, client, message) => {
     .trim()
     .substring(prefix.length)
     .split(/\s+/);
-    
-    if (COMMAND_NAME === 'testJoin')
-    {
-        return client.emit('guildMemberAdd', message.member);
-    }
 
     // Try to find the command fom our command list
     const commandToExecute = client.commands.get(COMMAND_NAME) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(COMMAND_NAME));
@@ -59,12 +54,6 @@ module.exports = (Discord, client, message) => {
         const now = Date.now();
         // Get the collection of TimeStamps for the given command
         const timestamps = cooldowns.get(commandToExecute.name);
-
-        console.log("cooldowns");
-        console.log(cooldowns);
-        console.log("timestamps");
-        console.log(timestamps);
-
         // Does the command specify a Cooldown amount? If not we use 3 seconds
         const cooldownAmount = (commandToExecute.cooldown || defaultCooldown) * 1000;
         // Does the TimeStamp have this authors ID in it?
@@ -80,12 +69,8 @@ module.exports = (Discord, client, message) => {
         timestamps.set(message.author.id, now);
         // Ensure that after the cooldown period we remove the Author ID. Allows us to make sure the user can set the command again
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-
-        console.log("timestamps");
-        console.log(timestamps);
-
         // By this point we know its all good. So run the command
-        commandToExecute.execute(message, args);
+        commandToExecute.execute(message, args, COMMAND_NAME);
     }
     // If its fails let the user know
     catch {

@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'stop',
+    name: 'basic_stop',
     description: 'Stops the bot from playing music',
     async execute(message, args) {
         // In channel

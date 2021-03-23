@@ -2,11 +2,12 @@ const ytdl = require('ytdl-core');
 const ytSearch = require('yt-search');
 
 module.exports = {
-    name: 'play',
+    name: 'basic_play',
     description: "Join and player a video from youtube",
     args: true,
     usage: '<URL \\ band \\ song name>',
     cooldown: 5,
+    //permissions: ['CONNECT', 'SPEAK'],
     async execute(message, args) {
         // In channel
         const voiceChannel = message.member.voice.channel;

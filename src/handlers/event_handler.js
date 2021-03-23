@@ -1,7 +1,6 @@
 const fs = require('fs');
 
 module.exports = (client, Discord) => {
-    client.cooldowns = new Discord.Collection();
 
     const load_dir = (dirs) => {
         const event_files = fs.readdirSync(`./src/events/${dirs}`).filter(file => file.endsWith('.js'));
